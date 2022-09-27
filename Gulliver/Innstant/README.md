@@ -1,4 +1,4 @@
-## Create the mapping table of the distance between Gulliver and Innstant.
+## Task 1: Create the mapping table of the distance between Gulliver and Innstant.
 
 Create a new table in the Gulliver database. Tabel columns should contain (GulliverDestinationId, GulliverDestinationName,InnstantDestinationId, InnstantDestinationName, Type)
 
@@ -33,3 +33,23 @@ If the destination has the type “area” then it should contain all of the cit
 cmd.Connection = dbConnection;
 cmd.CommandType = CommandType.Text; or CommandType.StoredProcedure
 cmd.CommandText = query;*/
+
+## Task 2: Receive the Israel hotels list
+
+It’s necessary to receive the list of Israeli hotels from Innstant.
+
+Acceptance criteria:
+
+Filter the list of the hotels (which received by the method GLV-11706: Search the hotelsOPEN ) by destination ID
+
+The list of relevant destinations here (this table received from the static data https://static-data-console.innstant-servers.com/static-files/download and filtered by the parameter “Country ID=IL”).
+
+As a result of filtering the list of hotels, a table should be obtained:
+
+Hotel ID
+
+Hotel name
+
+destination id 
+
+destination name

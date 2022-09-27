@@ -1,6 +1,7 @@
 ﻿using Innstant.Models;
 using Innstant.Services;
 using System;
+using System.Collections.Generic;
 
 namespace Innstant
 {
@@ -9,11 +10,22 @@ namespace Innstant
 		static void Main(string[] args)
 		{
             GulliverService.CreateGulliverDestinationTable();
+
+            #region Task 2: Receive Israel hotel list
+
+            // Read all destinations from israel "IL"
+            var israelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
+
+            // Create tabels in the database
+
+            // find all hotel ID for this step create Stored procedure
+
+            // Search in hotels.csv file for all hotels by isael list ID
+
+            #endregion
         }
 
 
-
-       
 
         #region Save Data to CSV file
         public void SaveDataIntoCSV()

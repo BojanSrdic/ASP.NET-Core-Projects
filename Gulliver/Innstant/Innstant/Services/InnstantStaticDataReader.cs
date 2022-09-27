@@ -38,5 +38,10 @@ namespace Innstant.Services
 
             return innstantIsraelDestionatins;
         }
+
+        public static void a()
+		{
+
+		}
     }
 }
