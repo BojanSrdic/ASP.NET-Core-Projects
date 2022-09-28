@@ -1,7 +1,12 @@
 ﻿using Innstant.Models;
 using Innstant.Services;
+using Microsoft.Data.SqlClient;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
 
 namespace Innstant
 {
@@ -9,22 +14,150 @@ namespace Innstant
 	{
 		static void Main(string[] args)
 		{
-            GulliverService.CreateGulliverDestinationTable();
+            #region Task 1: Create Gulliver Destination tabel
+            //GulliverService.CreateGulliverDestinationTable();
+			#endregion
 
-            #region Task 2: Receive Israel hotel list
+			#region Task 2: Receive Israel hotel list
 
-            // Read all destinations from israel "IL"
-            var israelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
+			// To Do: Read all destinations from israel "IL"
+			var innstantIsraelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
 
-            // Create tabels in the database
+            // To Do: Read Hotels_Destination file
+            string[] innstantHotelDestionationRows = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.csv");
+            string[] innstantHotelDestionationRows1 = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.part1.csv");
 
-            // find all hotel ID for this step create Stored procedure
+            // Spojiti ova dva rezultata u jedan
 
-            // Search in hotels.csv file for all hotels by isael list ID
+            // To Do: Create new List of Hotel_Destination from Israel
+            var israelHotelDestionatin = new List<InnstantHotelDestination>();
+
+            // To Do: Create Israel DestinationId list
+        
+            // Using LINQ
+            var israelDestinationIdList = new List<int>(innstantIsraelsDestinationList.Select(s => s.DestinationId));
+            // see how where works
+
+            // Using foreach
+            /*var israelDestinationIdList = new List<int>();
+            foreach (InnstantDestinations a in innstantIsraelsDestinationList)
+			{
+                israelDestinationIdList.Add(a.DestinationId);
+
+            }*/
+
+            // To Do: Napuniti listu 
+            foreach (string row in innstantHotelDestionationRows.Skip(1))
+			{
+                string[] stringIntoArray = row.Split(',');
+
+				#region
+				// If we want to cast string to int we can not do taht directly!
+				var a = stringIntoArray.ElementAt(1);
+                var b = stringIntoArray[1];
+                //var c = (int)b;
+                var d = Convert.ToInt32(b);
+                #endregion
+                // Cast Row destinationId from string to int
+                var rowDestinationIdCastedValue = Convert.ToInt32(stringIntoArray[1]);
+
+
+                if (israelDestinationIdList.Contains(rowDestinationIdCastedValue))
+				{
+                    israelHotelDestionatin.Add(new InnstantHotelDestination() {
+                        DestinationId = Convert.ToInt32(stringIntoArray[0]),
+                        HotelId = Convert.ToInt32(stringIntoArray[1])
+                    });
+                }
+            }
+
+            //return israelHotelDestionatin;
+
+            // check if this can be done using stored procedure 
 
             #endregion
+
         }
 
+
+        #region Bojan komplikovanije resenje :D Preko DataTable
+        public static void ConvertCSVtoSQL()
+        {
+            try
+			{
+                // Ovde postoji jedna velika mana a to je komplikovanost koda
+                // Da bi citali podatke iz dataTable treba nam cela kompleksa logika sto se vidi u primeru kreiramo celu metodu koja cita redove pa dok pronadjemo sve te redove malo je komplikovano
+                // string[] hotelDestionationLines = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.csv");
+                // preskocili smo ceo kompleksan proces i smanjili kolicinu koda :D
+                // Tako da pogledati dusanovo resenje
+                string csv_file_path = @"C:\Users\b.srdic\Desktop\ASP.NET Core\Git\ASP.NET-Core-Projects\Gulliver\Innstant\Innstant\InnstantStaticData\hotel_destinations.csv";
+                DataTable csvData = GetDataTabletFromCSVFile(csv_file_path);
+                InsertDataIntoSQLServerUsingSQLBulkCopy(csvData);
+            }
+			catch(Exception ex)
+			{
+                Console.WriteLine(ex);
+			}
+            
+        }
+
+        private static DataTable GetDataTabletFromCSVFile(string csv_file_path)
+        {
+            DataTable csvData = new DataTable();
+            try
+            {
+                using (TextFieldParser csvReader = new TextFieldParser(csv_file_path))
+                {
+                    csvReader.SetDelimiters(new string[] { "," });
+                    csvReader.HasFieldsEnclosedInQuotes = true;
+                    string[] colFields = csvReader.ReadFields();
+                    foreach (string column in colFields)
+                    {
+                        DataColumn datecolumn = new DataColumn(column);
+                        datecolumn.AllowDBNull = true;
+                        csvData.Columns.Add(datecolumn);
+                    }
+                    while (!csvReader.EndOfData)
+                    {
+                        string[] fieldData = csvReader.ReadFields();
+                        //Making empty value as null
+                        for (int i = 0; i < fieldData.Length; i++)
+                        {
+                            if (fieldData[i] == "")
+                            {
+                                fieldData[i] = null;
+                            }
+                        }
+                        csvData.Rows.Add(fieldData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var a = ex.Message;
+                return null;
+            }
+            return csvData;
+        }
+
+        // Copy the DataTable to SQL Server using SqlBulkCopyReceived an invalid column 
+        public static void InsertDataIntoSQLServerUsingSQLBulkCopy(DataTable csvFileData)
+        {
+            using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True"))
+            {
+                dbConnection.Open();
+                using (SqlBulkCopy s = new SqlBulkCopy(dbConnection))
+                {
+                    s.DestinationTableName = "Destinations";
+
+                    foreach (var column in csvFileData.Columns)
+                        s.ColumnMappings.Add(column.ToString(), column.ToString());
+
+                    s.WriteToServer(csvFileData);
+                }
+            }
+        }
+        #endregion
 
 
         #region Save Data to CSV file
@@ -69,7 +202,7 @@ namespace Innstant
 
             foreach (var a in list)
             {
-                Console.WriteLine(a.Name);
+                Console.WriteLine(a.DestinationName);
             }
         }
 
@@ -79,3 +212,8 @@ namespace Innstant
 
 // Question: City or area? what we do not have anything written in last Contains
 // Proverio sam yaya provider Yaya ID, name Guliver ID gulier Name
+
+// TAsk 2:
+// Read about HashSet
+
+// Prepraviti static metode dok je jos vreme kako bi mogli testirati aplikaciju

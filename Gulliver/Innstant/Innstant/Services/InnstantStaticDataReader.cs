@@ -26,8 +26,8 @@ namespace Innstant.Services
                 {
                     innstantIsraelDestionatins.Add(new InnstantDestinations()
                     {
-                        Id = Convert.ToInt32(prop[0]),
-                        Name = prop[1],
+                        DestinationId = Convert.ToInt32(prop[0]),
+                        DestinationName = prop[1],
                         CountryId = prop[5],
                         Contains = prop[9]
                     });

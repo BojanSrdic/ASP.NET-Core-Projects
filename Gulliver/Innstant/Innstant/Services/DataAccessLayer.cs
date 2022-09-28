@@ -10,7 +10,7 @@ namespace Innstant.Services
 {
 	public class DataAccessLayer
 	{
-        #region Save Data to SQL database
+        #region Save Data to SQL database -- SaveDestinationsIntoDatabase
         public static void SaveDataIntoDatabase(List<GulliverDestinations> list)
         {
             using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True; Encrypt=False"))
@@ -29,6 +29,17 @@ namespace Innstant.Services
                 dbConnection.Close();
             }
         }
+        #endregion
+
+
+        #region Save Innstant Hotels-Destinations to database
+
+        #region My Way for creating HotelsDestiantion table
+            
+        #endregion
+
+        #region Dusans way for creating HotelsDestiantion table
+        #endregion
         #endregion
     }
 }

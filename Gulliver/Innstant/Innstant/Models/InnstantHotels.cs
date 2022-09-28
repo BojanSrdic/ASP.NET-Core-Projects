@@ -15,8 +15,8 @@ namespace Innstant.Models
 		public int Zip { get; set; }
 		public string Phone { get; set; }
 		public string Fax { get; set; }
-		//public int lat { get; set; }	// 44.072700500488
-		//public int lon { get; set; }  // 12.576800346374
+		public float lat { get; set; }	
+		public float lon { get; set; }  
 		public int Stars { get; set; }
 		public string Seoname { get; set; }
 	}

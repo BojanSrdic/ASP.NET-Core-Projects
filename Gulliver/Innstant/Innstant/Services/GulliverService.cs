@@ -38,8 +38,8 @@ namespace Innstant.Services
             {
                 gulliverIsraelDestinationTable.Add(new GulliverDestinations()
                 {
-                    InnstantDestinationId = destination.Id,
-                    InnstantDestinationName = destination.Name,
+                    InnstantDestinationId = destination.DestinationId,
+                    InnstantDestinationName = destination.DestinationName,
                     Type = destination.Type
                 });
             }
