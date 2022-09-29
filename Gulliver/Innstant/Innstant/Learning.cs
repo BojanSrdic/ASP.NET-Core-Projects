@@ -17,6 +17,8 @@ namespace Innstant
 			var b = stringArray[1];
 			//var c = (int)b;
 			var d = Convert.ToInt32(b);
+
+			// https://www.tutorialsteacher.com/articles/convert-string-to-int
 		}
 
 		public void ReadList()

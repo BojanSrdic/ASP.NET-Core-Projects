@@ -27,11 +27,16 @@ namespace Innstant
             var israelHotelDestinationMappingTable = IsraelHotelDestinationMappingTable(innstantIsraelsDestinationList);
             var innstantHotelsList = new List<InnstantHotelDestination>(); // ovo je lista Svih hotela iz izraela
 
-            // lista int vrednosti treab proslediti InnstantIsraelHotelsList() metodi
+            var innstantIsraelHotelIdList = new List<int>();
 
-            var innstantIsraelHotels = new List<InnstantHotels>(); // ovo je lista koja sadrzi sve hotele i opis
+			foreach (InnstantHotelDestination row in israelHotelDestinationMappingTable)
+			{
+                innstantIsraelHotelIdList.Add(row.HotelId);
+			}
 
-		    /*	foreach (InnstantHotels hotel in israelHotels)
+			InnstantIsraelHotelsList(innstantIsraelHotelIdList);
+
+            /*	foreach (InnstantHotels hotel in israelHotels)
 			{
 				if (innstantHotelsList.Contains(hotels.HotelId))
 				{
@@ -47,20 +52,26 @@ namespace Innstant
         }
 
         List<int> TestList = new List<int> { 123, 1323, 141, 13214, 51, 123 };
-        public static List<InnstantHotelDestination> InnstantIsraelHotelsList(List<int> IsraelHotelList)
+        public static List<InnstantHotelDestination> InnstantIsraelHotelsList(List<int> innstantIsraelHotelIdList)
 		{
 			string[] innstantHotelsArray = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotels.csv");
 
             var innstantIsraelHotels = new List<InnstantHotels>();
 
-			foreach (string hotel in innstantHotelsArray.Skip(1))
+			foreach (string hotelRow in innstantHotelsArray.Skip(1))
 			{
-                string[] stringIntoArray = hotel.Split(',');
+                string[] stringIntoArray = hotelRow.Split(',');
+                int hotelIdCastedValue = Convert.ToInt32(stringIntoArray[0]);
 
-                if ()
+                if (innstantIsraelHotelIdList.Contains(hotelIdCastedValue))
 				{
-                   
-				}
+                    innstantIsraelHotels.Add(new InnstantHotels { 
+                        HotelId = Convert.ToInt32(stringIntoArray[0]),
+                        HotelName = stringIntoArray[1],
+                        Address = stringIntoArray[2]
+                    });
+
+                }
 			}
 
             return null;
@@ -73,20 +84,21 @@ namespace Innstant
             // Read Hotels_Destination file and merge two string arrays in one
             string[] innstantHotelDestionationRows = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.csv");
             string[] innstantHotelDestionationRows1 = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.part1.csv");
-            innstantHotelDestionationRows = innstantHotelDestionationRows1.Concat(innstantHotelDestionationRows1).ToArray();
+            // innstantHotelDestionationRows = innstantHotelDestionationRows1.Concat(innstantHotelDestionationRows1).ToArray();
+            // kada se spajaju dva niza imamo problem sto se onaj prvi red ponavlaj i u rugom dokumentu a nismo ga skipovali
 
             var israelDestinationIdList = new List<int>(innstantIsraelsDestinationList.Select(s => s.DestinationId));
 
             // Create Israel Hotel_Destination list and fill the list
             var israelHotelDestionatin = new List<InnstantHotelDestination>();
-            foreach (string row in innstantHotelDestionationRows.Skip(1))
+            foreach (string destinationRow in innstantHotelDestionationRows.Skip(1))
             {
-                string[] stringIntoArray = row.Split(',');
+                string[] stringIntoArray = destinationRow.Split(',');
 
                 // Cast Row destinationId from string to int
-                var rowDestinationIdCastedValue = Convert.ToInt32(stringIntoArray[1]);
+                var destinationRowIdCastedValue = Convert.ToInt32(stringIntoArray[1]);
 
-                if (israelDestinationIdList.Contains(rowDestinationIdCastedValue))
+                if (israelDestinationIdList.Contains(destinationRowIdCastedValue))
                 {
                     israelHotelDestionatin.Add(new InnstantHotelDestination()
                     {
