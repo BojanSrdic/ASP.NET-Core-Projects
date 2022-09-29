@@ -53,3 +53,9 @@ Hotel name
 destination id 
 
 destination name
+
+## Task 3: Craete Innstant_Gulliver_Hotels_Conversion table
+
+Table should have two columns (InnstantHotelId, GulliverHotelId)
+InnstantHotelId is populated from innstant and GulliverHotelId through Beckoffice 
+This part of code extracts only InnstantHotelId and inserts them into the database 

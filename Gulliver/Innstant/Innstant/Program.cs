@@ -16,69 +16,92 @@ namespace Innstant
 		{
             #region Task 1: Create Gulliver Destination tabel
             //GulliverService.CreateGulliverDestinationTable();
-			#endregion
+            #endregion
 
-			#region Task 2: Receive Israel hotel list
+            #region Task 2: Receive Israel hotel list
 
-			// To Do: Read all destinations from israel "IL"
-			var innstantIsraelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
+            // Read all destinations from israel "IL"
+            var innstantIsraelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
 
-            // To Do: Read Hotels_Destination file
+            // Create mapping table between Israel Hotels and Destinations
+            var israelHotelDestinationMappingTable = IsraelHotelDestinationMappingTable(innstantIsraelsDestinationList);
+            var innstantHotelsList = new List<InnstantHotelDestination>(); // ovo je lista Svih hotela iz izraela
+
+            // lista int vrednosti treab proslediti InnstantIsraelHotelsList() metodi
+
+            var innstantIsraelHotels = new List<InnstantHotels>(); // ovo je lista koja sadrzi sve hotele i opis
+
+		    /*	foreach (InnstantHotels hotel in israelHotels)
+			{
+				if (innstantHotelsList.Contains(hotels.HotelId))
+				{
+                    // namapiraj
+				}
+			}*/
+
+            #endregion
+
+            #region Task 3: Craete Innstant_Gulliver_Hotels_Conversion table
+            #endregion
+
+        }
+
+        List<int> TestList = new List<int> { 123, 1323, 141, 13214, 51, 123 };
+        public static List<InnstantHotelDestination> InnstantIsraelHotelsList(List<int> IsraelHotelList)
+		{
+			string[] innstantHotelsArray = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotels.csv");
+
+            var innstantIsraelHotels = new List<InnstantHotels>();
+
+			foreach (string hotel in innstantHotelsArray.Skip(1))
+			{
+                string[] stringIntoArray = hotel.Split(',');
+
+                if ()
+				{
+                   
+				}
+			}
+
+            return null;
+		}
+
+		public static List<InnstantHotelDestination> IsraelHotelDestinationMappingTable(List<InnstantDestinations> innstantIsraelsDestinationList)
+        {
+            #region Task 2: Receive Israel hotel list
+
+            // Read Hotels_Destination file and merge two string arrays in one
             string[] innstantHotelDestionationRows = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.csv");
             string[] innstantHotelDestionationRows1 = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.part1.csv");
+            innstantHotelDestionationRows = innstantHotelDestionationRows1.Concat(innstantHotelDestionationRows1).ToArray();
 
-            // Spojiti ova dva rezultata u jedan
-
-            // To Do: Create new List of Hotel_Destination from Israel
-            var israelHotelDestionatin = new List<InnstantHotelDestination>();
-
-            // To Do: Create Israel DestinationId list
-        
-            // Using LINQ
             var israelDestinationIdList = new List<int>(innstantIsraelsDestinationList.Select(s => s.DestinationId));
-            // see how where works
 
-            // Using foreach
-            /*var israelDestinationIdList = new List<int>();
-            foreach (InnstantDestinations a in innstantIsraelsDestinationList)
-			{
-                israelDestinationIdList.Add(a.DestinationId);
-
-            }*/
-
-            // To Do: Napuniti listu 
+            // Create Israel Hotel_Destination list and fill the list
+            var israelHotelDestionatin = new List<InnstantHotelDestination>();
             foreach (string row in innstantHotelDestionationRows.Skip(1))
-			{
+            {
                 string[] stringIntoArray = row.Split(',');
 
-				#region
-				// If we want to cast string to int we can not do taht directly!
-				var a = stringIntoArray.ElementAt(1);
-                var b = stringIntoArray[1];
-                //var c = (int)b;
-                var d = Convert.ToInt32(b);
-                #endregion
                 // Cast Row destinationId from string to int
                 var rowDestinationIdCastedValue = Convert.ToInt32(stringIntoArray[1]);
 
-
                 if (israelDestinationIdList.Contains(rowDestinationIdCastedValue))
-				{
-                    israelHotelDestionatin.Add(new InnstantHotelDestination() {
+                {
+                    israelHotelDestionatin.Add(new InnstantHotelDestination()
+                    {
                         DestinationId = Convert.ToInt32(stringIntoArray[0]),
                         HotelId = Convert.ToInt32(stringIntoArray[1])
                     });
                 }
             }
 
-            //return israelHotelDestionatin;
+            return israelHotelDestionatin;
 
             // check if this can be done using stored procedure 
 
             #endregion
-
         }
-
 
         #region Bojan komplikovanije resenje :D Preko DataTable
         public static void ConvertCSVtoSQL()
