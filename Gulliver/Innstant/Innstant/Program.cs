@@ -1,7 +1,12 @@
 ﻿using Innstant.Models;
 using Innstant.Services;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualBasic.FileIO;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,109 +19,67 @@ namespace Innstant
 	{
 		static void Main(string[] args)
 		{
-            #region Task 1: Create Gulliver Destination tabel
-            //GulliverService.CreateGulliverDestinationTable();
-            #endregion
+            // Configuration of appsetings.json, Serilog and DI
+            var builder = new ConfigurationBuilder();
+            BuildConfig(builder);
 
-            #region Task 2: Receive Israel hotel list
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Build())
+                .Enrich.FromLogContext()
+                .WriteTo.Console()
+                .CreateLogger();
 
-            // Read all destinations from israel "IL"
-            var innstantIsraelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
+            Log.Logger.Information("Application starting");
 
-            // Create mapping table between Israel Hotels and Destinations
-            var israelHotelDestinationMappingTable = IsraelHotelDestinationMappingTable(innstantIsraelsDestinationList);
-            var innstantHotelsList = new List<InnstantHotelDestination>(); // ovo je lista Svih hotela iz izraela
-
-            var innstantIsraelHotelIdList = new List<int>();
-
-			foreach (InnstantHotelDestination row in israelHotelDestinationMappingTable)
-			{
-                innstantIsraelHotelIdList.Add(row.HotelId);
-			}
-
-			InnstantIsraelHotelsList(innstantIsraelHotelIdList);
-
-            /*	foreach (InnstantHotels hotel in israelHotels)
-			{
-				if (innstantHotelsList.Contains(hotels.HotelId))
-				{
-                    // namapiraj
-				}
-			}*/
-
-            #endregion
-
-            #region Task 3: Craete Innstant_Gulliver_Hotels_Conversion table
-            #endregion
-
-        }
-
-        List<int> TestList = new List<int> { 123, 1323, 141, 13214, 51, 123 };
-        public static List<InnstantHotelDestination> InnstantIsraelHotelsList(List<int> innstantIsraelHotelIdList)
-		{
-			string[] innstantHotelsArray = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotels.csv");
-
-            var innstantIsraelHotels = new List<InnstantHotels>();
-
-			foreach (string hotelRow in innstantHotelsArray.Skip(1))
-			{
-                string[] stringIntoArray = hotelRow.Split(',');
-                int hotelIdCastedValue = Convert.ToInt32(stringIntoArray[0]);
-
-                if (innstantIsraelHotelIdList.Contains(hotelIdCastedValue))
-				{
-                    innstantIsraelHotels.Add(new InnstantHotels { 
-                        HotelId = Convert.ToInt32(stringIntoArray[0]),
-                        HotelName = stringIntoArray[1],
-                        Address = stringIntoArray[2]
-                    });
-
-                }
-			}
-
-            return null;
-		}
-
-		public static List<InnstantHotelDestination> IsraelHotelDestinationMappingTable(List<InnstantDestinations> innstantIsraelsDestinationList)
-        {
-            #region Task 2: Receive Israel hotel list
-
-            // Read Hotels_Destination file and merge two string arrays in one
-            string[] innstantHotelDestionationRows = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.csv");
-            string[] innstantHotelDestionationRows1 = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.part1.csv");
-            // innstantHotelDestionationRows = innstantHotelDestionationRows1.Concat(innstantHotelDestionationRows1).ToArray();
-            // kada se spajaju dva niza imamo problem sto se onaj prvi red ponavlaj i u rugom dokumentu a nismo ga skipovali
-
-            var israelDestinationIdList = new List<int>(innstantIsraelsDestinationList.Select(s => s.DestinationId));
-
-            // Create Israel Hotel_Destination list and fill the list
-            var israelHotelDestionatin = new List<InnstantHotelDestination>();
-            foreach (string destinationRow in innstantHotelDestionationRows.Skip(1))
-            {
-                string[] stringIntoArray = destinationRow.Split(',');
-
-                // Cast Row destinationId from string to int
-                var destinationRowIdCastedValue = Convert.ToInt32(stringIntoArray[1]);
-
-                if (israelDestinationIdList.Contains(destinationRowIdCastedValue))
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) => 
                 {
-                    israelHotelDestionatin.Add(new InnstantHotelDestination()
-                    {
-                        DestinationId = Convert.ToInt32(stringIntoArray[0]),
-                        HotelId = Convert.ToInt32(stringIntoArray[1])
-                    });
-                }
-            }
+                    services.AddTransient<Start>();
+                })
+                .UseSerilog()
+                .Build();
 
-            return israelHotelDestionatin;
+            var svc = ActivatorUtilities.CreateInstance<Start>(host.Services);
+            svc.Run();
 
-            // check if this can be done using stored procedure 
-
-            #endregion
         }
+
+      
+        // Talk to appsettings.json
+        static void BuildConfig(IConfigurationBuilder builder)
+		{
+			#region Theoretical part
+			    // How to create connection to appsetting.json file
+			    #region .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+			    // What will that do?
+			    // It is going to create or add to our builder the ability to talk to appsettings.json
+			    // wherever you are running exe look in the same directory, so the current directory where you are running
+			    // Look for appsettings.json and add that as your settings file and that is not optional,
+			    // and if appsettings.json file changes reloade it
+			    #endregion
+
+			    #region .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+			    // We want also to override it for diferent env (Dev or Staging or Prod)
+			    //.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}");
+			    // appsettings.Development.json
+			    // what is this doing
+			    // istraziti malo :D
+			    #endregion
+
+			    #region .AddEnvironmentVariables();
+			    // EnvirounmentVariables
+			    #endregion
+			#endregion
+
+			builder.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
+                .AddEnvironmentVariables();
+        }
+		
 
         #region Bojan komplikovanije resenje :D Preko DataTable
-        public static void ConvertCSVtoSQL()
+        public void ConvertCSVtoSQL()
         {
             try
 			{
@@ -136,7 +99,7 @@ namespace Innstant
             
         }
 
-        private static DataTable GetDataTabletFromCSVFile(string csv_file_path)
+        private DataTable GetDataTabletFromCSVFile(string csv_file_path)
         {
             DataTable csvData = new DataTable();
             try
@@ -176,7 +139,7 @@ namespace Innstant
         }
 
         // Copy the DataTable to SQL Server using SqlBulkCopyReceived an invalid column 
-        public static void InsertDataIntoSQLServerUsingSQLBulkCopy(DataTable csvFileData)
+        public void InsertDataIntoSQLServerUsingSQLBulkCopy(DataTable csvFileData)
         {
             using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True"))
             {
@@ -242,6 +205,59 @@ namespace Innstant
         }
 
         #endregion
+    }
+
+    public class Start
+	{
+        private readonly ILogger<Start> _log;
+        private readonly IConfiguration _config;
+
+        public Start(ILogger<Start> log, IConfiguration config)
+		{
+            _log = log;
+            _config = config;
+		}
+
+        public void Run()
+        {
+            var a = _config.GetValue<int>("Value from appsettings");
+            _log.LogInformation("Message: {a}", a);
+            _log.LogWarning("warning");
+            _log.LogError("Error message");
+            Console.WriteLine("Console message");
+
+            #region Task 1: Create Gulliver Destination tabel
+            //GulliverService.CreateGulliverDestinationTable();
+            #endregion
+
+            #region Task 2: Receive Israel hotel list
+
+            // Read all destinations from israel "IL"
+            var innstantIsraelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
+
+            // Create mapping table between Israel Hotels and Destinations
+            var israelHotelDestinationMappingTable = InnstantStaticDataReader.InnstantIsraelHotelDestinationParser(innstantIsraelsDestinationList);
+
+            // Extract Israel Hotel Id from Hotels_Destinations mapping table
+            var innstantIsraelHotelIdList = new List<int>();
+
+            foreach (InnstantHotelDestination row in israelHotelDestinationMappingTable)
+            {
+                innstantIsraelHotelIdList.Add(row.HotelId);
+            }
+
+            // Read all Hotels
+            InnstantStaticDataReader.InnstantIsraelHotelsParser(innstantIsraelHotelIdList);
+
+            // Save Hotels to the database
+
+            #endregion
+
+            #region Task 3: Craete Innstant_Gulliver_Hotels_Conversion table
+            #endregion
+
+
+        }
     }
 }
 

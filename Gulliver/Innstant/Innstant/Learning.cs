@@ -21,6 +21,7 @@ namespace Innstant
 			// https://www.tutorialsteacher.com/articles/convert-string-to-int
 		}
 
+		// Kako ispisati listu?
 		public void ReadList()
 		{
 
@@ -49,3 +50,14 @@ namespace Innstant
 
 	}
 }
+
+
+// Goal: Insert dependency injection, Serilog and appsettings.json in console app
+// https://www.youtube.com/watch?v=GAOCe-2nXqc&ab_channel=IAmTimCorey
+// Logger
+// Check Nuget dependency serilog.sinks.File
+// serilog.sinks.elasticsearch
+
+// Appsettings as nesxt topis
+// https://www.youtube.com/watch?v=_2_qksdQKCE&ab_channel=IAmTimCorey
+
