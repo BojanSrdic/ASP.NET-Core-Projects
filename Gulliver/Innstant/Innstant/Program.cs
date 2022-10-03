@@ -35,6 +35,7 @@ namespace Innstant
                 .ConfigureServices((context, services) => 
                 {
                     services.AddTransient<Start>();
+                    services.AddScoped<InnstantStaticDataReader>();
                 })
                 .UseSerilog()
                 .Build();
@@ -211,12 +212,14 @@ namespace Innstant
 	{
         private readonly ILogger<Start> _log;
         private readonly IConfiguration _config;
+        private readonly InnstantStaticDataReader _innstantStaticDataReader;
 
-        public Start(ILogger<Start> log, IConfiguration config)
+        public Start(ILogger<Start> log, IConfiguration config, InnstantStaticDataReader innstantStaticDataReader)
 		{
             _log = log;
             _config = config;
-		}
+            _innstantStaticDataReader = innstantStaticDataReader;
+        }
 
         public void Run()
         {
@@ -233,10 +236,10 @@ namespace Innstant
             #region Task 2: Receive Israel hotel list
 
             // Read all destinations from israel "IL"
-            var innstantIsraelsDestinationList = InnstantStaticDataReader.InnstantDestinationsParser();
+            var innstantIsraelsDestinationList = _innstantStaticDataReader.InnstantDestinationsParser();
 
             // Create mapping table between Israel Hotels and Destinations
-            var israelHotelDestinationMappingTable = InnstantStaticDataReader.InnstantIsraelHotelDestinationParser(innstantIsraelsDestinationList);
+            var israelHotelDestinationMappingTable = _innstantStaticDataReader.InnstantIsraelHotelDestinationParser(innstantIsraelsDestinationList);
 
             // Extract Israel Hotel Id from Hotels_Destinations mapping table
             var innstantIsraelHotelIdList = new List<int>();
@@ -247,7 +250,7 @@ namespace Innstant
             }
 
             // Read all Hotels
-            InnstantStaticDataReader.InnstantIsraelHotelsParser(innstantIsraelHotelIdList);
+            _innstantStaticDataReader.InnstantIsraelHotelsParser(innstantIsraelHotelIdList);
 
             // Save Hotels to the database
 
