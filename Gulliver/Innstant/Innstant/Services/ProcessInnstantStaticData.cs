@@ -5,12 +5,19 @@ namespace Innstant.Services
 {
 	public class ProcessInnstantStaticData
 	{
-        public static List<InnstantDestinations> ProcessInnstantDestinations()
+        private readonly InnstantStaticDataReader _innstantStaticDataReader;
+
+        public ProcessInnstantStaticData(InnstantStaticDataReader innstantStaticDataReader)
+		{
+            _innstantStaticDataReader = innstantStaticDataReader;
+        }
+
+        public List<InnstantDestinations> ProcessInnstantDestinations()
         {
             // Read data from Innstamt
-            var innstantDestinationsData = InnstantStaticDataReader.InnstantDestinationsParser(); 
-            var innstantHotelsData = InnstantStaticDataReader.InnstantDestinationsParser();
-            var innstantDestinationHotelsData = InnstantStaticDataReader.InnstantDestinationsParser();
+            var innstantDestinationsData = _innstantStaticDataReader.InnstantDestinationsParser(); 
+            //var innstantHotelsData = _innstantStaticDataReader.InnstantDestinationsParser();
+            //var innstantDestinationHotelsData = _innstantStaticDataReader.InnstantDestinationsParser();
 
             #region Filter all Israel destinations by area or city
 

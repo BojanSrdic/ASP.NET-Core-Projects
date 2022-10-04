@@ -1,0 +1,29 @@
+{
+  "currencies": [ "EUR" ],
+  "customerCountry": "IL",
+  "customFields": [],
+  "dates": {
+    "from": "2022-10-09",
+    "to": "2022-10-11"
+  },
+  "destinations": [
+    {
+      "id": 12795,
+      "type": "hotel"
+    },
+    {
+      "id": 12835,
+      "type": "hotel"
+    }
+  ],
+  "filters": [],
+  "pax": [
+    {
+      "adults": 2,
+      "children": []
+
+    }
+  ],
+  "timeout": 19,
+  "service": "hotels"
+}

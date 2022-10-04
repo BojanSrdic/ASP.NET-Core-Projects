@@ -11,6 +11,12 @@ namespace Innstant.Services
 	/* This is CSV file converter, converts CSV file to C# object */
 	public class InnstantStaticDataReader
 	{
+        private readonly SaveInnstantStaticData _saveToDatabase;
+        public InnstantStaticDataReader(SaveInnstantStaticData saveToDatabase)
+		{
+            _saveToDatabase = saveToDatabase;
+		}
+
         public List<InnstantDestinations> InnstantDestinationsParser()
         {
             #region Read all destionations from destinations.csv file and filter them by Israel "IL"
@@ -70,6 +76,9 @@ namespace Innstant.Services
 
                 }
             }
+
+            // Save to database
+            _saveToDatabase.SaveInnstantHotelsIntoDatabase(innstantIsraelHotels);
 
             return innstantIsraelHotels;
         }

@@ -8,6 +8,8 @@ namespace Innstant
 {
 	class Learning
 	{
+		// Static vs DI opisat sta je radjeno i zasto i koja je razlika
+
 		public void Cast()
 		{
 			string[] stringArray = { "123", "981", "372", "996" };
@@ -60,4 +62,9 @@ namespace Innstant
 
 // Appsettings as nesxt topis
 // https://www.youtube.com/watch?v=_2_qksdQKCE&ab_channel=IAmTimCorey
+
+// SQL DECIMAL TYPE
+// https://www.sqlshack.com/understanding-sql-decimal-data-type/
+// https://kb.objectrocket.com/postgresql/decimal-vs-double-in-sql-600#:~:text=Double%20types%20are%20used%20when,takes%208%20bytes%20storage%20size.
+
 

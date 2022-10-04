@@ -166,7 +166,7 @@ namespace Innstant
         }
         #endregion
 
-        #region Ideas and Learning
+        /*#region Ideas and Learning
 
         public void NotUsed()
         {
@@ -205,7 +205,7 @@ namespace Innstant
             }
         }
 
-        #endregion
+        #endregion*/
     }
 
     public class Start

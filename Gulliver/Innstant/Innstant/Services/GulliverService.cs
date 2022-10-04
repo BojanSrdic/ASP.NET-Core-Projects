@@ -19,7 +19,7 @@ namespace Innstant.Services
             var gulliverMappingDbTable = GulliverDestinationMappingTable(innstantIzraelDestinations);
 
             // Save data to the SQL table
-            DataAccessLayer.SaveDataIntoDatabase(gulliverMappingDbTable);
+            SaveInnstantStaticData.SaveDataIntoDatabase(gulliverMappingDbTable);
         }
 
         public static void CreateHotelTable()
