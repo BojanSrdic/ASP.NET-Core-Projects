@@ -9,17 +9,25 @@ namespace Innstant.Services
 {
 	public class GulliverService
 	{
+        private readonly ProcessInnstantStaticData _innstantStaticData;
+        private readonly SaveInnstantStaticData _saveInnstantStaticData;
+        public GulliverService(ProcessInnstantStaticData innstantStaticData, SaveInnstantStaticData saveInnstantStaticData)
+		{
+            _innstantStaticData = innstantStaticData;
+            _saveInnstantStaticData = saveInnstantStaticData;
+		}
+
         #region Main Service Functionalities
-        public static void CreateGulliverDestinationTable()
+        public void CreateGulliverDestinationTable()
         {
             // Process Innstant Data
-            var innstantIzraelDestinations = ProcessInnstantStaticData.ProcessInnstantDestinations();
+            var innstantIzraelDestinations = _innstantStaticData.ProcessInnstantDestinations();
 
             // Create result tables
             var gulliverMappingDbTable = GulliverDestinationMappingTable(innstantIzraelDestinations);
 
             // Save data to the SQL table
-            SaveInnstantStaticData.SaveDataIntoDatabase(gulliverMappingDbTable);
+            _saveInnstantStaticData.SaveDataIntoDatabase(gulliverMappingDbTable);
         }
 
         public static void CreateHotelTable()

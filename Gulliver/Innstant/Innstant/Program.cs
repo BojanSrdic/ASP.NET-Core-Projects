@@ -1,4 +1,5 @@
-﻿using Innstant.Models;
+﻿using Innstant.InnstantAPI;
+using Innstant.Models;
 using Innstant.Services;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
@@ -36,6 +37,7 @@ namespace Innstant
                 {
                     services.AddTransient<Start>();
                     services.AddScoped<InnstantStaticDataReader>();
+                    services.AddScoped<InnstantService>();
                 })
                 .UseSerilog()
                 .Build();
@@ -213,12 +215,15 @@ namespace Innstant
         private readonly ILogger<Start> _log;
         private readonly IConfiguration _config;
         private readonly InnstantStaticDataReader _innstantStaticDataReader;
+        private readonly InnstantService _innstantService;
 
-        public Start(ILogger<Start> log, IConfiguration config, InnstantStaticDataReader innstantStaticDataReader)
+        public Start(ILogger<Start> log, IConfiguration config, InnstantStaticDataReader innstantStaticDataReader,
+            InnstantService innstantService)
 		{
             _log = log;
             _config = config;
             _innstantStaticDataReader = innstantStaticDataReader;
+            _innstantService = innstantService;
         }
 
         public void Run()
@@ -229,6 +234,7 @@ namespace Innstant
             _log.LogError("Error message");
             Console.WriteLine("Console message");
 
+            /*
             #region Task 1: Create Gulliver Destination tabel
             //GulliverService.CreateGulliverDestinationTable();
             #endregion
@@ -255,13 +261,17 @@ namespace Innstant
             // Save Hotels to the database
 
             #endregion
-
+            */
             #region Task 3: Craete Innstant_Gulliver_Hotels_Conversion table
             #endregion
 
+            #region Task 4: Innstant rooms
+            _innstantService.HitInnstantAPI();
+			#endregion
 
-        }
-    }
+
+		}
+	}
 }
 
 // Question: City or area? what we do not have anything written in last Contains

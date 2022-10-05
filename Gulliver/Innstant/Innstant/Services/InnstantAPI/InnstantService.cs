@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using static Innstant.InnstantAPI.JsonDeserializedInnstantRequestBody;
 
 namespace Innstant.InnstantAPI
@@ -27,7 +28,7 @@ namespace Innstant.InnstantAPI
 
             // Read innstant hotel list from database
                 // SP for reading
-            // var innstantHotelIdList = new List<int> { 12795, 12796, 12797, 12798, 12800, 12801, 12802 };
+            var innstantHotelIdList = new List<int> { 12795, 12796, 12797, 12798, 12800, 12801, 12802 };
 
             // Create request with that hotel list to instant
 
@@ -60,8 +61,21 @@ namespace Innstant.InnstantAPI
 			innstantRequestBody.customerCountry = "IL";
 			innstantRequestBody.customFields = new List<object>();
 			innstantRequestBody.dates = new Dates("2022-09-25", "2022-09-26");
-			innstantRequestBody.destinations = new List<Destination> { new Destination { id = 12795, type = "hotel" }, new Destination { id = 12795, type = "hotel" } };
-			innstantRequestBody.filters = new List<object>();
+			//innstantRequestBody.destinations = new List<Destination> { new Destination { id = 12795, type = "hotel" }, new Destination { id = 12795, type = "hotel" } };
+
+            var innstantHotelIdList = new List<int> { 12795, 12796, 12797, 12798, 12800, 12801, 12802 };
+            var destinationList = new List<Destination>();
+            foreach (int i in innstantHotelIdList)
+			{
+                destinationList.Add(new Destination
+                {
+                    id = i,
+                    type = "hotel"
+                });			
+            }
+
+            innstantRequestBody.destinations = destinationList;
+            innstantRequestBody.filters = new List<object>();
 			innstantRequestBody.pax = new List<Pax>();
 			innstantRequestBody.timeout = 19000;
 			innstantRequestBody.service = "hotels";
@@ -71,8 +85,8 @@ namespace Innstant.InnstantAPI
 
         private static string InnstantSearchPoolRequest(InnstantRequestBody body, string apiUrl)
         {
-
-            var jsonRequest = Serializer.SerializeToJson<InnstantRequestBody>(body);
+            string jsonRequest = JsonSerializer.Serialize(body);
+            //var jsonRequest = Serializer.SerializeToJson<InnstantRequestBody>(body);
 
             var httpSearchWebReq = (HttpWebRequest)WebRequest.Create(apiUrl);
             byte[] byteData = Encoding.UTF8.GetBytes(jsonRequest);
