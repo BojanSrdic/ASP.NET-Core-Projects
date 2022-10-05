@@ -10,13 +10,13 @@ namespace Innstant.Models
 	{
 		public int DestinationId { get; set; }
 		public string DestinationName { get; set; }
-		public string Type { get; set; }
-		public float lat { get; set; }
-		public float lon { get; set; }
+		public string DestinationType { get; set; }
+		public string Latitude { get; set; }
+		public string Longitude { get; set; }
 		public string CountryId { get; set; }
 		public int Searchable { get; set; }
 		public string Seoname { get; set; }
-		public string state { get; set; }
+		public string State { get; set; }
 		public string Contains { get; set; }
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Innstant.Models;
+﻿using Innstant.DataAccess;
+using Innstant.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,17 +8,32 @@ using System.Threading.Tasks;
 
 namespace Innstant.Services
 {
-	public class GulliverService
+    public interface IGulliverService
 	{
-        private readonly ProcessInnstantStaticData _innstantStaticData;
-        private readonly SaveInnstantStaticData _saveInnstantStaticData;
-        public GulliverService(ProcessInnstantStaticData innstantStaticData, SaveInnstantStaticData saveInnstantStaticData)
+        void CreateGulliverDestinationTable();
+        List<GulliverDestinations> GulliverDestinationMappingTable(List<InnstantDestinations> innstantIzraelDestinations);
+    }
+
+
+    public class GulliverService : IGulliverService
+    {
+        private readonly IProcessInnstantStaticData _innstantStaticData;
+        private readonly ISaveInnstantStaticData _saveInnstantStaticData;
+        private readonly IInnstantStaticDataReader _innstantStaticDataReader;
+		private readonly IInnstantDataAccessLayer _innstantDataAccessLayer;
+
+		public GulliverService(IProcessInnstantStaticData innstantStaticData, ISaveInnstantStaticData saveInnstantStaticData, IInnstantStaticDataReader innstantStaticDataReader,
+            IInnstantDataAccessLayer innstantDataAccessLayer)
 		{
             _innstantStaticData = innstantStaticData;
             _saveInnstantStaticData = saveInnstantStaticData;
-		}
+            _innstantStaticDataReader = innstantStaticDataReader;
+            _innstantDataAccessLayer = innstantDataAccessLayer;
+
+        }
 
         #region Main Service Functionalities
+
         public void CreateGulliverDestinationTable()
         {
             // Process Innstant Data
@@ -27,18 +43,35 @@ namespace Innstant.Services
             var gulliverMappingDbTable = GulliverDestinationMappingTable(innstantIzraelDestinations);
 
             // Save data to the SQL table
-            _saveInnstantStaticData.SaveDataIntoDatabase(gulliverMappingDbTable);
+            //_saveInnstantStaticData.SaveInnstantDestinationsMappingTable(gulliverMappingDbTable);
         }
 
-        public static void CreateHotelTable()
+       /* public void CreateGulliverHotelTable()
 		{
-            // To Do: ...
-		}
+            // Read all destinations from israel "IL"
+            var innstantIsraelsDestinationList = _innstantDataAccessLayer.GetInnstantDestinations();
+
+            // Create mapping table between Israel Hotels and Destinations
+            var israelHotelDestinationMappingTable = _innstantStaticDataReader.InnstantIsraelHotelDestinationParser(innstantIsraelsDestinationList);
+
+            // Extract Israel Hotel Id from Hotels_Destinations mapping table
+            var innstantIsraelHotelIdList = new List<int>();
+
+            foreach (InnstantHotelDestination row in israelHotelDestinationMappingTable)
+            {
+                innstantIsraelHotelIdList.Add(row.HotelId);
+            }
+
+            // Read all Hotels
+            _innstantStaticDataReader.InnstantIsraelHotelsParser(innstantIsraelHotelIdList);
+
+            // Save Hotels to the database
+        }*/
 
         #endregion
 
         // Mapp Gulliver destinations and Innstant destinations
-        public static List<GulliverDestinations> GulliverDestinationMappingTable(List<InnstantDestinations> innstantIzraelDestinations)
+        public List<GulliverDestinations> GulliverDestinationMappingTable(List<InnstantDestinations> innstantIzraelDestinations)
         {
             var gulliverIsraelDestinationTable = new List<GulliverDestinations>();
 
@@ -48,7 +81,7 @@ namespace Innstant.Services
                 {
                     InnstantDestinationId = destination.DestinationId,
                     InnstantDestinationName = destination.DestinationName,
-                    Type = destination.Type
+                    Type = destination.DestinationType
                 });
             }
 

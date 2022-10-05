@@ -22,9 +22,54 @@ namespace Innstant
 
 			// https://www.tutorialsteacher.com/articles/convert-string-to-int
 		}
+        /*#region Ideas and Learning
 
-		// Kako ispisati listu?
-		public void ReadList()
+public void NotUsed()
+{
+    var innstantDestinations = ProcessInnstantStaticData.ProcessInnstantDestinations();
+
+    foreach (InnstantDestinations destination in innstantDestinations)
+    {
+        string a = destination.Contains;
+        string[] destionationProperties = a.Split(";");
+
+        int[] ints = Array.ConvertAll(destionationProperties, s => int.Parse(s));
+
+        if (ints.Length != 1)
+        {
+            // Set Type prop to city or area
+            destination.Type = "Area";
+
+        }
+        else { destination.Type = "City"; }
+
+        bool v = a.Contains(";");
+        destination.Type = destination.Contains.Contains(";") ? "Area" : "City";
+    }
+}
+
+public void PrintListMethode()
+{
+    var list = ProcessInnstantStaticData.ProcessInnstantDestinations();
+    // Lisata
+    Console.WriteLine(list); // necu dobiti listu 
+    // da bi ispisao listu u terminalu potrebno je da napravim foreach pelju
+
+    foreach (var a in list)
+    {
+        Console.WriteLine(a.DestinationName);
+    }
+}
+
+#endregion*/
+        #region Save Data to CSV file
+        public void SaveDataIntoCSV()
+        {
+
+        }
+        #endregion
+        // Kako ispisati listu?
+        public void ReadList()
 		{
 
 		// Using LINQ
@@ -68,3 +113,85 @@ namespace Innstant
 // https://kb.objectrocket.com/postgresql/decimal-vs-double-in-sql-600#:~:text=Double%20types%20are%20used%20when,takes%208%20bytes%20storage%20size.
 
 
+/*
+ 
+    #region Bojan komplikovanije resenje :D Preko DataTable
+        public void ConvertCSVtoSQL()
+        {
+            try
+			{
+                // Ovde postoji jedna velika mana a to je komplikovanost koda
+                // Da bi citali podatke iz dataTable treba nam cela kompleksa logika sto se vidi u primeru kreiramo celu metodu koja cita redove pa dok pronadjemo sve te redove malo je komplikovano
+                // string[] hotelDestionationLines = File.ReadAllLines(@"..\\..\\..\\InnstantStaticData\\hotel_destinations.csv");
+                // preskocili smo ceo kompleksan proces i smanjili kolicinu koda :D
+                // Tako da pogledati dusanovo resenje
+                string csv_file_path = @"C:\Users\b.srdic\Desktop\ASP.NET Core\Git\ASP.NET-Core-Projects\Gulliver\Innstant\Innstant\InnstantStaticData\hotel_destinations.csv";
+                DataTable csvData = GetDataTabletFromCSVFile(csv_file_path);
+                InsertDataIntoSQLServerUsingSQLBulkCopy(csvData);
+            }
+			catch(Exception ex)
+			{
+                Console.WriteLine(ex);
+			}
+            
+        }
+
+        private DataTable GetDataTabletFromCSVFile(string csv_file_path)
+        {
+            DataTable csvData = new DataTable();
+            try
+            {
+                using (TextFieldParser csvReader = new TextFieldParser(csv_file_path))
+                {
+                    csvReader.SetDelimiters(new string[] { "," });
+                    csvReader.HasFieldsEnclosedInQuotes = true;
+                    string[] colFields = csvReader.ReadFields();
+                    foreach (string column in colFields)
+                    {
+                        DataColumn datecolumn = new DataColumn(column);
+                        datecolumn.AllowDBNull = true;
+                        csvData.Columns.Add(datecolumn);
+                    }
+                    while (!csvReader.EndOfData)
+                    {
+                        string[] fieldData = csvReader.ReadFields();
+                        //Making empty value as null
+                        for (int i = 0; i < fieldData.Length; i++)
+                        {
+                            if (fieldData[i] == "")
+                            {
+                                fieldData[i] = null;
+                            }
+                        }
+                        csvData.Rows.Add(fieldData);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var a = ex.Message;
+                return null;
+            }
+            return csvData;
+        }
+
+        // Copy the DataTable to SQL Server using SqlBulkCopyReceived an invalid column 
+        public void InsertDataIntoSQLServerUsingSQLBulkCopy(DataTable csvFileData)
+        {
+            using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True"))
+            {
+                dbConnection.Open();
+                using (SqlBulkCopy s = new SqlBulkCopy(dbConnection))
+                {
+                    s.DestinationTableName = "Destinations";
+
+                    foreach (var column in csvFileData.Columns)
+                        s.ColumnMappings.Add(column.ToString(), column.ToString());
+
+                    s.WriteToServer(csvFileData);
+                }
+            }
+        }
+        #endregion
+ 
+ */

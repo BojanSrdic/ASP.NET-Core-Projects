@@ -3,54 +3,64 @@ using System.Collections.Generic;
 
 namespace Innstant.Services
 {
-	public class ProcessInnstantStaticData
+    public interface IProcessInnstantStaticData
 	{
-        private readonly InnstantStaticDataReader _innstantStaticDataReader;
+        List<InnstantDestinations> ProcessInnstantDestinations();
+    }
 
-        public ProcessInnstantStaticData(InnstantStaticDataReader innstantStaticDataReader)
+    public class ProcessInnstantStaticData : IProcessInnstantStaticData
+    {
+        private readonly IInnstantStaticDataReader _innstantStaticDataReader;
+
+        public ProcessInnstantStaticData(IInnstantStaticDataReader innstantStaticDataReader)
 		{
             _innstantStaticDataReader = innstantStaticDataReader;
         }
 
-        public List<InnstantDestinations> ProcessInnstantDestinations()
-        {
-            // Read data from Innstamt
-            var innstantDestinationsData = _innstantStaticDataReader.InnstantDestinationsParser(); 
-            //var innstantHotelsData = _innstantStaticDataReader.InnstantDestinationsParser();
-            //var innstantDestinationHotelsData = _innstantStaticDataReader.InnstantDestinationsParser();
+		public List<InnstantDestinations> ProcessInnstantDestinations()
+		{
+			throw new System.NotImplementedException();
+		}
 
-            #region Filter all Israel destinations by area or city
+		/*    public List<InnstantDestinations> ProcessInnstantDestinations()
+			{
+				// Read data from Innstamt
+				var innstantDestinationsData = _innstantStaticDataReader.InnstantDestinationsParser(); 
+				//var innstantHotelsData = _innstantStaticDataReader.InnstantDestinationsParser();
+				//var innstantDestinationHotelsData = _innstantStaticDataReader.InnstantDestinationsParser();
 
-            var innstantIzraelDestinations = new List<InnstantDestinations>();
+				#region Filter all Israel destinations by area or city
 
-            foreach (InnstantDestinations destination in innstantDestinationsData)
-            {
-                #region Way one is to create new list!
-                if (!string.IsNullOrEmpty(destination.Contains))
-                {
-                    innstantIzraelDestinations.Add(destination);
+				var innstantIzraelDestinations = new List<InnstantDestinations>();
 
-                    // Set Type property of Destinaton class
-                    destination.Type = destination.Contains.Contains(";") ? "Area" : "City";
-                }
-                #endregion
-
-                #region Way two is to remove elements from existing list!
-                /*
-                if (string.IsNullOrEmpty(destination.Contains))
+				foreach (InnstantDestinations destination in innstantDestinationsData)
 				{
-                    innstantDestinationsData.Remove(destination);
+					#region Way one is to create new list!
+					if (!string.IsNullOrEmpty(destination.Contains))
+					{
+						innstantIzraelDestinations.Add(destination);
+
+						// Set Type property of Destinaton class
+						destination.DestinationType = destination.Contains.Contains(";") ? "Area" : "City";
+					}
+					#endregion
+
+					#region Way two is to remove elements from existing list!
+					*//*
+					if (string.IsNullOrEmpty(destination.Contains))
+					{
+						innstantDestinationsData.Remove(destination);
+					}
+
+					// Set Type property of Destinaton class
+					destination.Type = destination.Contains.Contains(";") ? "Area" : "City";
+					*//*
+					#endregion
 				}
 
-                // Set Type property of Destinaton class
-                destination.Type = destination.Contains.Contains(";") ? "Area" : "City";
-                */
-                #endregion
-            }
+				#endregion
 
-            #endregion
-
-            return innstantIzraelDestinations;
-        }
-    }
+				return innstantIzraelDestinations;
+			}*/
+	}
 }

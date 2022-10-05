@@ -26,20 +26,7 @@ END
 exec [INSERT_DATA_INTO_DB] 0, 2995, AJSD, Jerusalem, City
 
 
-___________________________
-CREATE TABLE [dbo].[Destinations](
-	[id] [int] NULL,
-	[name] [varchar](50) NULL,
-	[type] [varchar](50) NULL,
-	[lat] [varchar](50) null,
-	[lon] [varchar](50) null,
-	[countryid] [varchar](50) NULL,
-	[searchable] int null,
-	[seoname] [varchar](50) NULL,
-	[state] [varchar](50) NULL,
-	[contains] [varchar](max) NULL,
-) ON [PRIMARY]
-GO
+
 
 CREATE TABLE [dbo].[Hotel_Destinations](
 	hotel_id [int] NULL,

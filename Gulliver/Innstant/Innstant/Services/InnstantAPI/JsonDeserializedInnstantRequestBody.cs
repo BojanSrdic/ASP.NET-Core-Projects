@@ -27,6 +27,12 @@ namespace Innstant.InnstantAPI
         {
             public int adults { get; set; }
             public List<object> children { get; set; }
+
+            public Pax(int adults, List<object> children)
+            {
+                this.adults = adults;
+                this.children = children;
+            }
         }
 
         public class InnstantRequestBody

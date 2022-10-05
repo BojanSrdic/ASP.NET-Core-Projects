@@ -1,17 +1,65 @@
 ﻿using Innstant.Models;
 using Microsoft.Data.SqlClient;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Innstant.Services
 {
-	public class SaveInnstantStaticData
+	public interface ISaveInnstantStaticData
 	{
-        #region Save Data to SQL database -- SaveDestinationsIntoDatabase
-        public void SaveDataIntoDatabase(List<GulliverDestinations> list)
+        void SaveInnstantDestinations(List<InnstantDestinations> list);
+        void SaveInnstantHotelDestinations(List<InnstantHotelDestination> list);
+        void SaveInnstantHotelDestinationsMappingTable(List<GulliverDestinations> list);
+        void SaveInnstantHotels(List<InnstantHotels> list);
+    }
+
+    public class SaveInnstantStaticData : ISaveInnstantStaticData
+	{
+        string connectionString = "Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True; Encrypt=False";
+
+        #region ## SaveInnstantDestinations ##
+        public void SaveInnstantDestinations(List<InnstantDestinations> list)
+        {
+            using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True; Encrypt=False"))
+            {
+                dbConnection.Open();
+
+                foreach (InnstantDestinations row in list)
+                {
+                    string query = string.Format("INSERT INTO [Innstant_Destinations] values ('{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', {9})", 
+                        row.DestinationId, row.DestinationName, row.DestinationType, row.Latitude, row.Longitude, row.CountryId, row.Searchable, row.Seoname, row.State, row.Contains);
+
+                    SqlCommand cmd = new SqlCommand(query, dbConnection);
+                    cmd.ExecuteNonQuery();
+                }
+
+                dbConnection.Close();
+            }
+        }
+        #endregion
+
+        #region ## SaveInnstantHotelDestinations ##
+        public void SaveInnstantHotelDestinations(List<InnstantHotelDestination> list)
+        {
+            using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True; Encrypt=False"))
+            {
+                dbConnection.Open();
+
+                foreach (InnstantHotelDestination row in list)
+                {
+                    string query = string.Format("INSERT INTO [Innstant_Hotel_Destination] values ('{0}', '{1}', '{2}')", row.HotelId,
+                        row.DestinationId, row.Surroundings);
+
+                    SqlCommand cmd = new SqlCommand(query, dbConnection);
+                    cmd.ExecuteNonQuery();
+                }
+
+                dbConnection.Close();
+            }
+        }
+        #endregion
+
+        #region ## SaveInnstantHotelDestinationsMappingTable ##
+        public void SaveInnstantHotelDestinationsMappingTable(List<GulliverDestinations> list)
         {
             using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True; Encrypt=False"))
             {
@@ -31,8 +79,8 @@ namespace Innstant.Services
         }
         #endregion
 
-        #region Save Innstant Hotels to SQL database
-        public void SaveInnstantHotelsIntoDatabase(List<InnstantHotels> list)
+        #region ## SaveInnstantHotels ##
+        public void SaveInnstantHotels(List<InnstantHotels> list)
         {
             using (SqlConnection dbConnection = new SqlConnection(@"Data Source = BSRDIC; Initial Catalog = Test; Integrated Security = True; Encrypt=False"))
             {
