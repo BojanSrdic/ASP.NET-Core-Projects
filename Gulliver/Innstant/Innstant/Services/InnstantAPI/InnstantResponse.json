@@ -1,0 +1,271 @@
+{
+  "timestamp": 1665049962,
+  "requestTime": "2022-10-06 09:52:42",
+  "status": "done",
+  "completed": 100,
+  "sessionId": "m:54822:19433:2022-10-25:2022-10-26:IL:2+:EUR:77f84e5f72f3b6fa51deacfb6a3c7085:hotel:b2b",
+  "processTime": 30,
+  "expireAt": "2022-10-06 10:22:38",
+  "results": [
+    {
+      "price": {
+        "amount": 266.58,
+        "currency": "EUR"
+      },
+      "netPrice": {
+        "amount": 264.24,
+        "currency": "USD"
+      },
+      "barRate": {
+        "amount": 325.11,
+        "currency": "EUR"
+      },
+      "confirmation": "immediate",
+      "paymentType": "pre",
+      "packageRate": false,
+      "commissionable": true,
+      "providers": [
+        {
+          "id": 53529,
+          "name": "Direct \u21c4"
+        }
+      ],
+      "specialOffers": [],
+      "items": [
+        {
+          "name": "Standard Double",
+          "category": "standard",
+          "bedding": "double",
+          "board": "BB",
+          "hotelId": "47064",
+          "pax": {
+            "adults": 2,
+            "children": []
+          },
+          "quantity": {
+            "min": 1,
+            "max": 1
+          },
+          "detailsAvailable": true
+        }
+      ],
+      "cancellation": {
+        "type": "fully-refundable",
+        "frames": [
+          {
+            "from": "2022-10-06 00:00:00",
+            "to": "2022-10-23 23:59:59",
+            "penalty": {
+              "amount": 0,
+              "currency": "EUR"
+            }
+          },
+          {
+            "from": "2022-10-24 00:00:00",
+            "to": "2022-10-24 23:59:59",
+            "penalty": {
+              "amount": 266.58,
+              "currency": "EUR"
+            }
+          }
+        ]
+      },
+      "code": "47064:standard:double:BB:633ea567053127.84398516$1029i1054B"
+    },
+    {
+      "price": {
+        "amount": 253.83,
+        "currency": "EUR"
+      },
+      "netPrice": {
+        "amount": 251.6,
+        "currency": "USD"
+      },
+      "barRate": {
+        "amount": 298.63,
+        "currency": "EUR"
+      },
+      "confirmation": "immediate",
+      "paymentType": "pre",
+      "packageRate": false,
+      "commissionable": true,
+      "providers": [
+        {
+          "id": 53529,
+          "name": "Direct \u21c4"
+        }
+      ],
+      "specialOffers": [],
+      "items": [
+        {
+          "name": "Deluxe Double",
+          "category": "deluxe",
+          "bedding": "double",
+          "board": "BB",
+          "hotelId": "21667",
+          "pax": {
+            "adults": 2,
+            "children": []
+          },
+          "quantity": {
+            "min": 1,
+            "max": 1
+          },
+          "detailsAvailable": true
+        }
+      ],
+      "cancellation": {
+        "type": "fully-refundable",
+        "frames": [
+          {
+            "from": "2022-10-06 00:00:00",
+            "to": "2022-10-22 23:59:59",
+            "penalty": {
+              "amount": 0,
+              "currency": "EUR"
+            }
+          },
+          {
+            "from": "2022-10-23 00:00:00",
+            "to": "2022-10-24 23:59:59",
+            "penalty": {
+              "amount": 253.83,
+              "currency": "EUR"
+            }
+          }
+        ]
+      },
+      "code": "21667:deluxe:double:BB:633ea56704fcd4.36568657$1029i1054B"
+    },
+    {
+      "price": {
+        "amount": 464.08,
+        "currency": "EUR"
+      },
+      "netPrice": {
+        "amount": 460,
+        "currency": "USD"
+      },
+      "barRate": {
+        "amount": 565.95,
+        "currency": "EUR"
+      },
+      "confirmation": "immediate",
+      "paymentType": "pre",
+      "packageRate": false,
+      "commissionable": true,
+      "providers": [
+        {
+          "id": 53529,
+          "name": "Direct \u21c4"
+        }
+      ],
+      "specialOffers": [],
+      "items": [
+        {
+          "name": "Deluxe Double",
+          "category": "deluxe",
+          "bedding": "double",
+          "board": "BB",
+          "hotelId": "12843",
+          "pax": {
+            "adults": 2,
+            "children": []
+          },
+          "quantity": {
+            "min": 1,
+            "max": 1
+          },
+          "detailsAvailable": true
+        }
+      ],
+      "cancellation": {
+        "type": "fully-refundable",
+        "frames": [
+          {
+            "from": "2022-10-06 00:00:00",
+            "to": "2022-10-22 23:59:59",
+            "penalty": {
+              "amount": 0,
+              "currency": "EUR"
+            }
+          },
+          {
+            "from": "2022-10-23 00:00:00",
+            "to": "2022-10-24 23:59:59",
+            "penalty": {
+              "amount": 464.08,
+              "currency": "EUR"
+            }
+          }
+        ]
+      },
+      "code": "12843:deluxe:double:BB:633ea567043492.62967529$1029i1054B"
+    },
+    {
+      "price": {
+        "amount": 181.3,
+        "currency": "EUR"
+      },
+      "netPrice": {
+        "amount": 179.71,
+        "currency": "USD"
+      },
+      "barRate": {
+        "amount": 213.3,
+        "currency": "EUR"
+      },
+      "confirmation": "immediate",
+      "paymentType": "pre",
+      "packageRate": false,
+      "commissionable": true,
+      "providers": [
+        {
+          "id": 53529,
+          "name": "Direct \u21c4"
+        }
+      ],
+      "specialOffers": [],
+      "items": [
+        {
+          "name": "Superior Double",
+          "category": "superior",
+          "bedding": "double",
+          "board": "RO",
+          "hotelId": "12853",
+          "pax": {
+            "adults": 2,
+            "children": []
+          },
+          "quantity": {
+            "min": 1,
+            "max": 1
+          },
+          "detailsAvailable": true
+        }
+      ],
+      "cancellation": {
+        "type": "fully-refundable",
+        "frames": [
+          {
+            "from": "2022-10-06 00:00:00",
+            "to": "2022-10-22 23:59:59",
+            "penalty": {
+              "amount": 0,
+              "currency": "EUR"
+            }
+          },
+          {
+            "from": "2022-10-23 00:00:00",
+            "to": "2022-10-24 23:59:59",
+            "penalty": {
+              "amount": 181.3,
+              "currency": "EUR"
+            }
+          }
+        ]
+      },
+      "code": "12853:superior:double:RO:633ea567045305.99863791$1029i1054B"
+    }
+  ]
+}

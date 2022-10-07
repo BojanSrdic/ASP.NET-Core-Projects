@@ -1,26 +1,30 @@
 ﻿using Innstant.DataAccess;
 using Innstant.Models;
+using Innstant.Services;
+using Innstant.Services.InnstantAPI;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using static Innstant.InnstantAPI.JsonDeserializedInnstantRequestBody;
 
 namespace Innstant.InnstantAPI
 {
     public interface IInnstantService
 	{
-        List<int> HitInnstantAPI();
-
+        void HitInnstantAPI();
     }
 
     public class InnstantService : IInnstantService
     {
         private readonly IInnstantDataAccessLayer _innstantDataAccessLayer;
-        public InnstantService(IInnstantDataAccessLayer innstantDataAccessLayer)
+        private readonly ISaveInnstantStaticData _saveInnstantStaticData;
+        public InnstantService(IInnstantDataAccessLayer innstantDataAccessLayer, ISaveInnstantStaticData saveInnstantStaticData)
 		{
             _innstantDataAccessLayer = innstantDataAccessLayer;
+            _saveInnstantStaticData = saveInnstantStaticData;
         }
 
         //private static readonly string searchApiUrl = ConfigurationManager.AppSettings["InnstantSearchAPIUrl"];
@@ -29,43 +33,85 @@ namespace Innstant.InnstantAPI
         private static readonly string searchApiUrl = "https://api-search.mishor5.innstant-servers.com/hotels/search";
         private static readonly string poolApiUrl = "https://api-search.mishor5.innstant-servers.com/hotels/poll";
 
-        public List<int> HitInnstantAPI()
+        public void HitInnstantAPI()
+		{
+            var allInnstantHotels = GetAllIsraelInnstantHotels();
+            var innstantHotelIdList = Separator(allInnstantHotels);
+
+            var rooms = new List<InnstantRooms>();
+
+            foreach (List<int> requestBodyInnstantHotelIdList in innstantHotelIdList) 
+            {
+                var innstantRequestBody = InnstantRequestBody(requestBodyInnstantHotelIdList);
+
+                // Get hotels from Innstant - Search
+                InnstantSearchPoolRequest(innstantRequestBody, searchApiUrl);
+
+                // Get hotels from Innstant - Poll
+                var returnPoll = InnstantSearchPoolRequest(innstantRequestBody, poolApiUrl).ToString();
+                var response = JsonSerializer.Deserialize<InnstantResponse>(returnPoll);
+                
+                foreach (Result result in response.results)
+				{
+                    rooms.Add(new InnstantRooms { 
+                        HotelId = Convert.ToInt32(result.items[0].hotelId),
+                        RoomName = result.items[0].name,
+                        RoomCategory = result.items[0].category,
+                        Bedding = result.items[0].bedding
+                    });
+
+                    // Check the board task: GLV-12049
+                    List<string> boards = new List<string> { "RO", "BB", "HB", "FB", "AL" };
+
+                    if (!boards.Contains(result.items[0].board))
+                    {
+                        boards.Add(result.items[0].board);
+                    }
+                }
+            }
+
+            _saveInnstantStaticData.SaveInnstantRooms(rooms);
+
+
+        }
+
+        // Rate limit is set to 250 hotelIds per request and we have 2004 i guess
+        private List<int> GetAllIsraelInnstantHotels()
 		{
             var innstantHotelIdList = new List<int>();
             var innstantHotels = _innstantDataAccessLayer.GetIsraelInnstantHotels();
 
             foreach (InnstantHotels item in innstantHotels)
-			{
+            {
                 innstantHotelIdList.Add(item.HotelId);
             }
 
-            var innstantRequestBody = InnstantRequestBody(innstantHotelIdList);
-
-            // Get hotels from Innstant - Search
-            InnstantSearchPoolRequest(innstantRequestBody, searchApiUrl);
-
-            // Get hotels from Innstant - Poll
-            var returnPoll = InnstantSearchPoolRequest(innstantRequestBody, poolApiUrl);
-
-
-            //GetHotelsFromInnstant(innstantRequest, searchApiUrl);
-            //var returnPoll = GetHotelsFromInnstant(innstantRequest, poolApiUrl);
-            //var response = BLHelper.DataConvertorHelper.DeserializeJson<InnstantSearchResponse>(returnPoll);
-
-            //return GetInstantDomesticHotelsResults(response);
-            return null;
-
+            return innstantHotelIdList;
 		}
 
-		private InnstantRequestBody InnstantRequestBody(List<int> hotelIdList)
+        private List<List<int>> Separator(List<int> innstantHotelIdList)
+		{
+            var innstantHotelIdRateLimit = new List<List<int>>();
+
+            int count = innstantHotelIdList.Count();
+
+            for(int i = 0; i >= 0 && i <= count; i = i + 250)
+			{
+                List<int> element = innstantHotelIdList.Skip(i).Take(250).ToList();
+                innstantHotelIdRateLimit.Add(element);
+            }
+
+            return innstantHotelIdRateLimit;
+        }
+
+        private InnstantRequestBody InnstantRequestBody(List<int> hotelIdList)
 		{
 			var innstantRequestBody = new InnstantRequestBody();
 
-			innstantRequestBody.currencies = new List<string> { "EUR" };    // moze i new string[] { "EUR" };
+			innstantRequestBody.currencies = new List<string> { "EUR" };
 			innstantRequestBody.customerCountry = "IL";
 			innstantRequestBody.customFields = new List<object>();
 			innstantRequestBody.dates = new Dates("2022-10-25", "2022-10-26");
-			//innstantRequestBody.destinations = new List<Destination> { new Destination { id = 12795, type = "hotel" }, new Destination { id = 12795, type = "hotel" } };
 
             var destinationList = new List<Destination>();
             foreach (int i in hotelIdList)
@@ -80,7 +126,7 @@ namespace Innstant.InnstantAPI
             innstantRequestBody.destinations = destinationList;
             innstantRequestBody.filters = new List<object>();
 
-            var childrenList = new List<object> { 3, 6 };
+            var childrenList = new List<object>();
             int numberOfAdults = 2;
 
             innstantRequestBody.pax = new List<Pax> { new Pax(numberOfAdults, childrenList) };
@@ -94,7 +140,6 @@ namespace Innstant.InnstantAPI
         private static string InnstantSearchPoolRequest(InnstantRequestBody body, string apiUrl)
         {
             string jsonRequest = JsonSerializer.Serialize(body);
-            //var jsonRequest = Serializer.SerializeToJson<InnstantRequestBody>(body);
 
             var httpSearchWebReq = (HttpWebRequest)WebRequest.Create(apiUrl);
             byte[] byteData = Encoding.UTF8.GetBytes(jsonRequest);

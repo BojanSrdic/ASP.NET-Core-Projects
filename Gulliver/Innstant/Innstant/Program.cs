@@ -91,17 +91,15 @@ namespace Innstant
         private readonly IInnstantStaticDataReader _innstantStaticDataReader;
         private readonly IInnstantService _innstantService;
         private readonly IGulliverService _gulliverService;
-        private readonly IInnstantDataAccessLayer _innstantDataAccessLayer;
 
         public Start(ILogger<Start> log, IConfiguration config, IInnstantStaticDataReader innstantStaticDataReader,
-            IInnstantService innstantService, IGulliverService gulliverService, IInnstantDataAccessLayer innstantDataAccessLayer)
+            IInnstantService innstantService, IGulliverService gulliverService)
 		{
             _log = log;
             _config = config;
             _innstantStaticDataReader = innstantStaticDataReader;
             _innstantService = innstantService;
             _gulliverService = gulliverService;
-            _innstantDataAccessLayer = innstantDataAccessLayer;
         }
 
         public void Run()
@@ -112,23 +110,22 @@ namespace Innstant
             _log.LogError("Error message");
             Console.WriteLine("Console message");
 
-            //var innstantIsraelsDestinationList = _innstantDataAccessLayer.GetInnstantDestinations();
+            #region Task 1: Insert Innstant static data into DB - [Innstant_Destinationss] - [Innstant_Hotel_Destination] - [Innstant_Hotels]
+            // SeedData();
+            #endregion
 
-            #region Task 1: Create Destination mapping table - [Innstant_Gulliver_Destination_Cconversions]
+            #region Task 2: Create Destination mapping table - [Innstant_Gulliver_Destination_Cconversions]
             //_gulliverService.CreateGulliverDestinationTable();
             #endregion
 
-            #region Task 2: Insert Hotels into Gulliver tabel - [Innstant_Hotels]
-
-            #endregion
 
             #region Task 3: Craete Innstant_Gulliver_Hotels_Conversion table
             #endregion
 
-            #region Task 4: Innstant rooms
+            #region Task 4: Insert Innstant static data about rooms into DB 
+            // Receive the rooms list task: GLV-12036
             _innstantService.HitInnstantAPI();
             #endregion
-
 
         }
 
@@ -139,7 +136,7 @@ namespace Innstant
             var innstantIsraelHotelDestinationList = _innstantStaticDataReader.InnstantIsraelHotelDestinationParser(innstantIsraelsDestinations);
             _innstantStaticDataReader.InnstantIsraelHotelsParser(innstantIsraelHotelDestinationList);
         }
-	}
+    }
 }
 
 // Question: City or area? what we do not have anything written in last Contains
