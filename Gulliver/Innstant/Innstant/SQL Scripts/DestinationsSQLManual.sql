@@ -42,3 +42,7 @@ select * from  [dbo].[Destinations]
 
 ALTER TABLE [dbo].[Destinations]
 ALTER COLUMN [contains] [varchar](max);
+
+-- How to insert whole column into another table
+INSERT INTO [INNSTANT_GULLIVER_HOTELS_CONVERSIONS] (InnstantHotelId) 
+SELECT [id] FROM [GulliverDom].[dbo].[INNSTANT_HOTELS]

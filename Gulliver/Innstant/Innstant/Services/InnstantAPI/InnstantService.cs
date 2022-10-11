@@ -49,30 +49,38 @@ namespace Innstant.InnstantAPI
 
                 // Get hotels from Innstant - Poll
                 var returnPoll = InnstantSearchPoolRequest(innstantRequestBody, poolApiUrl).ToString();
+
                 var response = JsonSerializer.Deserialize<InnstantResponse>(returnPoll);
                 
-                foreach (Result result in response.results)
+                // Receive the rooms lsist task: GLV-12036
+                if(response.results != null && response.results.Count > 0)
 				{
-                    rooms.Add(new InnstantRooms { 
-                        HotelId = Convert.ToInt32(result.items[0].hotelId),
-                        RoomName = result.items[0].name,
-                        RoomCategory = result.items[0].category,
-                        Bedding = result.items[0].bedding
-                    });
-
-                    // Check the board task: GLV-12049
-                    List<string> boards = new List<string> { "RO", "BB", "HB", "FB", "AL" };
-
-                    if (!boards.Contains(result.items[0].board))
+                    foreach (Result result in response.results)
                     {
-                        boards.Add(result.items[0].board);
+                        string[] innstantRoomCode = result.code.Split(':');
+                        string roomTypeId = $"{innstantRoomCode[0]}:{innstantRoomCode[1]}:{innstantRoomCode[2]}";
+
+                        rooms.Add(new InnstantRooms
+                        {
+                            HotelId = Convert.ToInt32(result.items[0].hotelId),
+                            RoomTypeId = roomTypeId,
+                            RoomName = result.items[0].name,
+                            RoomCategory = result.items[0].category,
+                            Bedding = result.items[0].bedding
+                        });
+
+                        // Check the board task: GLV-12049
+                        List<string> boards = new List<string> { "RO", "BB", "HB", "FB", "AL" };
+
+                        if (!boards.Contains(result.items[0].board))
+                        {
+                            boards.Add(result.items[0].board);
+                        }
                     }
                 }
             }
 
             _saveInnstantStaticData.SaveInnstantRooms(rooms);
-
-
         }
 
         // Rate limit is set to 250 hotelIds per request and we have 2004 i guess
@@ -111,22 +119,22 @@ namespace Innstant.InnstantAPI
 			innstantRequestBody.currencies = new List<string> { "EUR" };
 			innstantRequestBody.customerCountry = "IL";
 			innstantRequestBody.customFields = new List<object>();
-			innstantRequestBody.dates = new Dates("2022-10-25", "2022-10-26");
+			innstantRequestBody.dates = new Dates("2022-12-15", "2022-12-16");
 
             var destinationList = new List<Destination>();
-            foreach (int i in hotelIdList)
-			{
+            //foreach (int i in hotelIdList)
+			//{
                 destinationList.Add(new Destination
                 {
-                    id = i,
+                    id = 21106,
                     type = "hotel"
                 });			
-            }
+            //}
 
             innstantRequestBody.destinations = destinationList;
             innstantRequestBody.filters = new List<object>();
 
-            var childrenList = new List<object>();
+            var childrenList = new List<object>();// { 4, 7 };
             int numberOfAdults = 2;
 
             innstantRequestBody.pax = new List<Pax> { new Pax(numberOfAdults, childrenList) };
@@ -137,7 +145,7 @@ namespace Innstant.InnstantAPI
 			return innstantRequestBody;
 		}
 
-        private static string InnstantSearchPoolRequest(InnstantRequestBody body, string apiUrl)
+        private string InnstantSearchPoolRequest(InnstantRequestBody body, string apiUrl)
         {
             string jsonRequest = JsonSerializer.Serialize(body);
 
@@ -171,3 +179,4 @@ namespace Innstant.InnstantAPI
         }
     }
 }
+

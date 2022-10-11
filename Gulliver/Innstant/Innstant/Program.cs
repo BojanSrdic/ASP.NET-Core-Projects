@@ -12,6 +12,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -124,7 +125,13 @@ namespace Innstant
 
             #region Task 4: Insert Innstant static data about rooms into DB 
             // Receive the rooms list task: GLV-12036
+
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             _innstantService.HitInnstantAPI();
+            stopwatch.Stop();
+
+            Console.WriteLine(Stopwatch.GetTimestamp());
             #endregion
 
         }

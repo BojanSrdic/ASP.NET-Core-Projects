@@ -6,7 +6,26 @@ using System.Threading.Tasks;
 
 namespace Innstant
 {
-	class Learning
+    public class Student
+    {
+        #region Fields
+        public int Id { get; set; }
+        public string _Name;
+        #endregion
+
+        #region Props
+        public string Name
+        {
+            get { return _Name; }
+            set { _Name = value; }
+        }
+        #endregion
+
+        #region Methodes
+        #endregion
+    }
+
+    class Learning
 	{
 		// Static vs DI opisat sta je radjeno i zasto i koja je razlika
 

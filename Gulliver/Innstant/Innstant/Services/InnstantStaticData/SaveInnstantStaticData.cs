@@ -1,6 +1,7 @@
 ﻿using Innstant.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
+using System.Data;
 
 namespace Innstant.Services
 {
@@ -89,12 +90,17 @@ namespace Innstant.Services
 
                 foreach (InnstantRooms row in list)
                 {
-                    string query = string.Format("INSERT INTO [Innstant_Rooms] values ('{0}', '{1}', '{2}', '{3}')",
-                        row.HotelId, row.RoomName, row.RoomCategory, row.Bedding);
+                    SqlCommand cmd = new SqlCommand("[Innstant_Insert_Room_Types]", dbConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@RoomTypeId", row.RoomTypeId);
+                    cmd.Parameters.AddWithValue("@HotelId", row.HotelId);
+                    cmd.Parameters.AddWithValue("@RoomName", row.RoomName);
+                    cmd.Parameters.AddWithValue("@RoomCategory", row.RoomCategory);
+                    cmd.Parameters.AddWithValue("@Bedding", row.Bedding);
 
-                    SqlCommand cmd = new SqlCommand(query, dbConnection);
+
                     cmd.ExecuteNonQuery();
-                }
+                }                
 
                 dbConnection.Close();
             }

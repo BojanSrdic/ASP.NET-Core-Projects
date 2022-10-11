@@ -9,6 +9,7 @@ namespace Innstant.Models
 	public class InnstantRooms
 	{
 		public int HotelId { get; set; }
+		public string RoomTypeId { get; set; }
 		public string RoomName { get; set; }
 		public string RoomCategory { get; set; }
 		public string Bedding { get; set; }
